@@ -7,7 +7,7 @@ Simulando el medio solvente y el medio hollejo, con la transferencia de antocian
 
 ## Nombre completo y mail de los integrantes del grupo:
 
-Andrés Aguilera: andres.aguilera.j@ug.uchile.cl
+Andrés Aguilera: andres.aguilera.j@ug.uchile.cl \\
 Nicolás Ebner: nicolas.ebner@ug.uchile.cl
 Ciro Fernandez: persaciroandres@gmail.com
 Matías Godoy: matias.godoy.a@ug.uchile.cl
