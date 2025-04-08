@@ -2,40 +2,40 @@ clear all
 close all
 clc
 
-% Parámetros
-Kc = 3.398e-8;  %[m/s]
-a  = 2.307e4; %[m^2/m^3]
-K  = 0.151; % [-]
-v  = 0.0083; % [m/s]
-r_reactor = 0.0175; % [m]
-L_reactor = 0.3; % [m]
-r_pelota  = 1.3e-4; % [m]
+% Parametros
+Kc        = 6.0793e-7;   % [m/s]      Coeficiente de transferencia de masa global
+a         = 2.307e4;     % [m^2/m^3]  Razon de superficie de hollejo por volumen de reactor
+K         = 0.151;       % [-]        Coeficiente de particion de antocianinas en el hollejo
+v         = 1.15e-4;     % [m/s]      Velocidad promedio del flujo
+r_reactor = 0.0175;      % [m]        Radio basal del reactor
+L_reactor = 0.3;         % [m]        Largo del reactor
+r_pelota  = 1.3e-4;      % [m]        Radio de un hollejo
+Ca0       = 3*1.23*1000; % [kg/m^3]   Concentracion inicial de antocianina en un hollejo
 
 
-V_reactor = pi()*r_reactor^2*L_reactor; % [m^3]
+%% Calculo de volumen y area de un hollejo
 A_pelota = 4*pi()*r_pelota^2; % [m^2]
 V_pelota = 4/3*pi()*r_pelota^3; % [m^3]
 
-Ca0 = 10.71; % [kg/m^3]
-
-
-% Vector Altura reactor
-z_0 = 0; % [m]
-dz  = 0.005; % [m]
+%% Vector Eje Z
+z_0 = 0;         % [m]
+dz  = 0.005;     % [m]
 z_f = L_reactor; % [m]
 Z   = [z_0:dz:z_f];
 
-% Vector Radio reactor
-r_0 = 0; % [m]
+%% Vector Eje R
+r_0 = 0;           % [m]
 dr = r_reactor/20; %[m]
 r_f = 2*r_reactor; %[m]
-R = [r_0+dr:dr:r_f+dr]; % Uso de un valor en r al incio y al final para ver paredes del tubo -> cambio de coordenadas
+R = [r_0+dr:dr:r_f+dr]; % Uso de un valor en r al incio y al final para ver paredes del tubo
 
-% Vector T
-t_0 = 0; % [s]
-dt  = 60; % [s]
+%% Vector Temporal
+t_0 = 0;      % [s]
+dt  = 60;     % [s]
 t_f = 7*3600; % [s]
 T   = [t_0:dt:t_f];
+
+
 
 % Inicio de matrices
 %% Ca Solvente
@@ -51,11 +51,8 @@ Ca_SF = zeros(length(Z), length(R), length(T));
 Ja = zeros(length(Z), length(R), length(T));
 
 
-Ca_SFtest = zeros(length(Z), length(R), length(T));
 
-
-
-% Condición inicial
+% Condiciones iniciales
 %% Concentracion en el solvente
 Ca_S(1:end,2:end-1,1) = 0; % [kg/m^3]
 
@@ -71,9 +68,9 @@ Ja(1:end,1) = 0; % [kg/(s*m^2)]
 
 % Diferencia
 %% Constantes
-c1 = 1/(1 + v*dt/dz + Kc*a*dt); %  [-]
-c2 = v/(dz/dt + v + Kc*a*dz); % [-]
-c3 = Kc*a/(1/dt+v/dz+Kc*a); % [-]
+c1 = 1/(1 + v*dt/dz + Kc*a*dt); % [-]
+c2 = v/(dz/dt + v + Kc*a*dz);   % [-]
+c3 = Kc*a/(1/dt+v/dz+Kc*a);     % [-]
 
 
 % Diferencias finitas
@@ -97,13 +94,13 @@ for k = 1:length(T)
     t_hora = int2str(floor(T(k)/3600));
     t_minuto = int2str(mod(T(k)/60,60));
     imagesc(R,ZZ,Ca_S(:,:,k))
-    xlabel("Largo")
-    ylabel("Radio")
+    xlabel("Radio [m]")
+    ylabel("Largo [m]")
     h = colorbar();
     xlim("tight")
     ylim("tight")
     title(cstrcat("Caso base Antocianinas (Medio Solvente), ",t_hora, ' [h] y ', t_minuto, ' [min]'))
-    title(h,"Concentración")
+    title(h,"Concentración [kg/m^3]")
     pause(0.01)
 end
 hold off
@@ -114,13 +111,13 @@ for k = 1:length(T)
     t_hora = int2str(floor(T(k)/3600));
     t_minuto = int2str(mod(T(k)/60,60));
     imagesc(R,ZZ,Ca_F(:,:,k))
-    xlabel("Radio")
-    ylabel("Largo")
+    xlabel("Radio [m]")
+    ylabel("Largo [m]")
     h = colorbar();
     xlim("tight")
     ylim("tight")
     title(cstrcat("Caso base Antocianinas (Medio Fruto): ",t_hora, ' [h] y ', t_minuto, ' [min]'))
-    title(h,"Concentración")
+    title(h,"Concentración [kg/m^3]")
     pause(0.01)
 end
 hold off
