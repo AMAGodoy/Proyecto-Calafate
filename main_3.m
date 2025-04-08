@@ -8,15 +8,21 @@ a  = 2.307e4; %[m^2/m^3]
 K  = 0.151; % [-]
 v  = 0.0083; % [m/s]
 r_reactor = 0.0175; % [m]
+L_reactor = 0.3; % [m]
 r_pelota  = 1.3e-4; % [m]
-V_pelota = 4/3*pi()*r_pelota^3; % [m^3]
+
+
+V_reactor = pi()*r_reactor^2*L_reactor; % [m^3]
 A_pelota = 4*pi()*r_pelota^2; % [m^2]
+V_pelota = 4/3*pi()*r_pelota^3; % [m^3]
+
 Ca0 = 10.71; % [kg/m^3]
+
 
 % Vector Altura reactor
 z_0 = 0; % [m]
 dz  = 0.005; % [m]
-z_f = 0.05; % [m]
+z_f = L_reactor; % [m]
 Z   = [z_0:dz:z_f];
 
 % Vector Radio reactor
@@ -80,66 +86,33 @@ for k = 2:length(T)
 
         Ca_S(i,2:end-1,k) = Ca_S(i,2:end-1,k-1)*c1 + Ca_S(i-1,2:end-1,k)*c2 + Ca_SF(i,2:end-1,k)*c3;
     end
-    %Ca_S(end,2:end-1,k) = Ca_S(end,2:end-1,k-1)*c4 + Ca_S(end-1,2:end-1,k)*c5;
-
-    %% Cálculo de nuevo valor de concentraciones en el fruto en nuevo tiempo
-
 end
 
 % Graficar
 ZZ = -Z;
 
-%figure(1)
-%hold on
-%for k = 1:length(T)
-%    t_tiempo = int2str(T(k));
-%    imagesc(R,ZZ,Ca_S(:,:,k))
-%    xlabel("Largo")
-%    ylabel("Radio")
-%    h = colorbar();
-%    xlim("tight")
-%    ylim("tight")
-%    title(cstrcat("Caso base Antocianinas, ",t_tiempo, " [s]"))
-%    title(h,"Concentración")
-%    pause(0.25)
-%end
-%hold off
-
-
-%figure(2)
-%hold on
-%for k = 1:length(T)
-%    t_tiempo = int2str(T(k));
-%    subplot(1,2,1)
-%    imagesc(ZZ,R,Ca_S(:,:,k))
-%    xlabel("Radio")
-%    ylabel("Largo")
-%    h = colorbar();
-%    xlim("tight")
-%    ylim("tight")
-%   title(cstrcat("Caso base Antocianinas Solvente, ",t_tiempo, " [s]"))
-%    title(h,"Concentración")
-
-%    subplot(1,2,2)
-%    imagesc(ZZ,R,Ca_F(:,:,k))
-%    xlabel("Radio")
-%    ylabel("Largo")
-%   hi = colorbar();
-%    xlim("tight")
-%    ylim("tight")
-%    title(cstrcat("Caso base Antocianinas Fruto, ",t_tiempo, " [s]"))
-%    title(h,"Concentración")
-%    pause(0.05)
-%end
-%hold off
-
+figure(1)
+hold on
+for k = 1:length(T)
+    t_hora = int2str(floor(T(k)/3600));
+    t_minuto = int2str(mod(T(k)/60,60));
+    imagesc(R,ZZ,Ca_S(:,:,k))
+    xlabel("Largo")
+    ylabel("Radio")
+    h = colorbar();
+    xlim("tight")
+    ylim("tight")
+    title(cstrcat("Caso base Antocianinas (Medio Solvente), ",t_hora, ' [h] y ', t_minuto, ' [min]'))
+    title(h,"Concentración")
+    pause(0.01)
+end
+hold off
 
 figure(3)
 hold on
 for k = 1:length(T)
     t_hora = int2str(floor(T(k)/3600));
     t_minuto = int2str(mod(T(k)/60,60));
-    t_tiempo = int2str(T(k));
     imagesc(R,ZZ,Ca_F(:,:,k))
     xlabel("Radio")
     ylabel("Largo")
@@ -148,6 +121,6 @@ for k = 1:length(T)
     ylim("tight")
     title(cstrcat("Caso base Antocianinas (Medio Fruto): ",t_hora, ' [h] y ', t_minuto, ' [min]'))
     title(h,"Concentración")
-    pause(0.05)
+    pause(0.01)
 end
 hold off
