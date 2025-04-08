@@ -27,8 +27,8 @@ R = [r_0+dr:dr:r_f+dr]; % Uso de un valor en r al incio y al final para ver pare
 
 % Vector T
 t_0 = 0; % [s]
-dt  = 1; % [s]
-t_f = 500; % [s]
+dt  = 60; % [s]
+t_f = 7*3600; % [s]
 T   = [t_0:dt:t_f];
 
 % Inicio de matrices
@@ -137,6 +137,8 @@ ZZ = -Z;
 figure(3)
 hold on
 for k = 1:length(T)
+    t_hora = int2str(floor(T(k)/3600));
+    t_minuto = int2str(mod(T(k)/60,60));
     t_tiempo = int2str(T(k));
     imagesc(R,ZZ,Ca_F(:,:,k))
     xlabel("Radio")
@@ -144,7 +146,7 @@ for k = 1:length(T)
     h = colorbar();
     xlim("tight")
     ylim("tight")
-    title(cstrcat("Caso base Antocianinas Fruto, ",t_tiempo, " [s]"))
+    title(cstrcat("Caso base Antocianinas (Medio Fruto): ",t_hora, ' [h] y ', t_minuto, ' [min]'))
     title(h,"Concentración")
     pause(0.05)
 end
