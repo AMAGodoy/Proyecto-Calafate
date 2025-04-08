@@ -3,31 +3,32 @@ close all
 clc
 
 % Parámetros
-Kc = 3.398e-4;
-a  = 2.307e4;
-K  = 0.151;
-v  = 1.083;
-r  = 1.3e-4;
-V_pelota = 4/3*pi()*r^3;
-A_pelota = 4*pi()*r^2;
-Ca0 = 10.71;
+Kc = 3.398e-8;  %[m/s]
+a  = 2.307e4; %[m^2/m^3]
+K  = 0.151; % [-]
+v  = 0.0083; % [m/s]
+r_reactor = 0.0175; % [m]
+r_pelota  = 1.3e-4; % [m]
+V_pelota = 4/3*pi()*r_pelota^3; % [m^3]
+A_pelota = 4*pi()*r_pelota^2; % [m^2]
+Ca0 = 10.71; % [kg/m^3]
 
-% Vector Z
-z_0 = 0;
-dz  = 0.5;
-z_f = 20;
+% Vector Altura reactor
+z_0 = 0; % [m]
+dz  = 0.005; % [m]
+z_f = 0.05; % [m]
 Z   = [z_0:dz:z_f];
 
-% Vector R
-r_0 = 0;
-dr = r/10;
-r_f = 2*r;
+% Vector Radio reactor
+r_0 = 0; % [m]
+dr = r_reactor/20; %[m]
+r_f = 2*r_reactor; %[m]
 R = [r_0+dr:dr:r_f+dr]; % Uso de un valor en r al incio y al final para ver paredes del tubo -> cambio de coordenadas
 
 % Vector T
-t_0 = 0;
-dt  = 0.5;
-t_f = 40;
+t_0 = 0; % [s]
+dt  = 1; % [s]
+t_f = 500; % [s]
 T   = [t_0:dt:t_f];
 
 % Inicio de matrices
@@ -50,26 +51,23 @@ Ca_SFtest = zeros(length(Z), length(R), length(T));
 
 % Condición inicial
 %% Concentracion en el solvente
-Ca_S(1:end,2:end-1,1) = 0;
+Ca_S(1:end,2:end-1,1) = 0; % [kg/m^3]
 
 %% Concentracion en el fruto
-Ca_F(1:end,2:end-1,1) = Ca0;
+Ca_F(1:end,2:end-1,1) = Ca0; % [kg/m^3]
 
 %% Concentracion en la superficie del fruto
-Ca_SF(1:end,2:end-1,1) = Ca_F(1:end,2:end-1,1) * K;
+Ca_SF(1:end,2:end-1,1) = Ca_F(1:end,2:end-1,1) * K; % [kg/m^3]
 
 %% Flux desde la superficie al solvente
-Ja(1:end,1) = 0;
+Ja(1:end,1) = 0; % [kg/(s*m^2)]
 
 
 % Diferencia
 %% Constantes
-c1 = 1/(1 + v*dt/dz + Kc*a*dt);
-c2 = 1/(dz/dt + v + Kc*a*dz);
-c3 = Kc*a/(1/dt+v/dz+Kc*a);
-
-%c4 = 1/(1 + v*dt/dz);
-%c5 = 1/(dz/dt + v);
+c1 = 1/(1 + v*dt/dz + Kc*a*dt); %  [-]
+c2 = v/(dz/dt + v + Kc*a*dz); % [-]
+c3 = Kc*a/(1/dt+v/dz+Kc*a); % [-]
 
 
 % Diferencias finitas
@@ -91,18 +89,63 @@ end
 % Graficar
 ZZ = -Z;
 
-figure(1)
+%figure(1)
+%hold on
+%for k = 1:length(T)
+%    t_tiempo = int2str(T(k));
+%    imagesc(R,ZZ,Ca_S(:,:,k))
+%    xlabel("Largo")
+%    ylabel("Radio")
+%    h = colorbar();
+%    xlim("tight")
+%    ylim("tight")
+%    title(cstrcat("Caso base Antocianinas, ",t_tiempo, " [s]"))
+%    title(h,"Concentración")
+%    pause(0.25)
+%end
+%hold off
+
+
+%figure(2)
+%hold on
+%for k = 1:length(T)
+%    t_tiempo = int2str(T(k));
+%    subplot(1,2,1)
+%    imagesc(ZZ,R,Ca_S(:,:,k))
+%    xlabel("Radio")
+%    ylabel("Largo")
+%    h = colorbar();
+%    xlim("tight")
+%    ylim("tight")
+%   title(cstrcat("Caso base Antocianinas Solvente, ",t_tiempo, " [s]"))
+%    title(h,"Concentración")
+
+%    subplot(1,2,2)
+%    imagesc(ZZ,R,Ca_F(:,:,k))
+%    xlabel("Radio")
+%    ylabel("Largo")
+%   hi = colorbar();
+%    xlim("tight")
+%    ylim("tight")
+%    title(cstrcat("Caso base Antocianinas Fruto, ",t_tiempo, " [s]"))
+%    title(h,"Concentración")
+%    pause(0.05)
+%end
+%hold off
+
+
+figure(3)
 hold on
 for k = 1:length(T)
     t_tiempo = int2str(T(k));
-    imagesc(R,ZZ,Ca_S(:,:,k))
-    xlabel("Largo")
-    ylabel("Radio")
+    imagesc(R,ZZ,Ca_F(:,:,k))
+    xlabel("Radio")
+    ylabel("Largo")
     h = colorbar();
     xlim("tight")
     ylim("tight")
-    title(cstrcat("Caso base Antocianinas, ",t_tiempo, " [s]"))
+    title(cstrcat("Caso base Antocianinas Fruto, ",t_tiempo, " [s]"))
     title(h,"Concentración")
-    pause(0.25)
+    pause(0.05)
 end
 hold off
