@@ -2,18 +2,20 @@ clear all
 close all
 clc
 
-% Parametros
+%% VER FLUJO TEMPORAL
+p = 0;
+% Parámetros
 Kc        = 6.0793e-7;   % [m/s]      Coeficiente de transferencia de masa global
-a         = 2.307e4;     % [m^2/m^3]  Razon de superficie de hollejo por volumen de reactor
-K         = 0.151;       % [-]        Coeficiente de particion de antocianinas en el hollejo
+a         = 2.307e4;     % [m^2/m^3]  Razón de superficie de hollejo por volumen de reactor
+K         = 0.151;       % [-]        Coeficiente de partición de antocianinas en el hollejo
 v         = 1.15e-4;     % [m/s]      Velocidad promedio del flujo
 r_reactor = 0.0175;      % [m]        Radio basal del reactor
 L_reactor = 0.3;         % [m]        Largo del reactor
 r_pelota  = 1.3e-4;      % [m]        Radio de un hollejo
-Ca0       = 3*1.23*1000; % [kg/m^3]   Concentracion inicial de antocianina en un hollejo
+Ca0       = 10.71; % [kg/m^3]   Concentracion inicial de antocianina en un hollejo
+V         = 10; % [L]
 
-
-%% Calculo de volumen y area de un hollejo
+%% Calculo de volúmen y área de un hollejo
 A_pelota = 4*pi()*r_pelota^2; % [m^2]
 V_pelota = 4/3*pi()*r_pelota^3; % [m^3]
 
@@ -50,7 +52,8 @@ Ca_SF = zeros(length(Z), length(R), length(T));
 % Flux entre superficie de fruto y solvente
 Ja = zeros(length(Z), length(R), length(T));
 
-
+% Rendimiento
+X  = zeros(length(T),1);
 
 % Condiciones iniciales
 %% Concentracion en el solvente
@@ -85,9 +88,15 @@ for k = 2:length(T)
     end
 end
 
+% Calculo de rendimiento
+M_tot = sum(sum(Ca_S*V)) + sum(sum(Ca_F*V));
+
+X = (M_tot(1)-M_tot)./M_tot(1);
+
 % Graficar
 ZZ = -Z;
 
+if p == 1
 figure(1)
 hold on
 for k = 1:length(T)
@@ -105,7 +114,7 @@ for k = 1:length(T)
 end
 hold off
 
-figure(3)
+figure(2)
 hold on
 for k = 1:length(T)
     t_hora = int2str(floor(T(k)/3600));
@@ -120,4 +129,14 @@ for k = 1:length(T)
     title(h,"Concentración [kg/m^3]")
     pause(0.01)
 end
+hold off
+end
+
+figure(3)
+hold on
+plot(T/60,X,'b','LineWidth',2)
+xlabel("Tiempo [min]")
+ylabel("Rendimiento")
+xlim("tight")
+title("Caso base Antocianinas: Rendimiento")
 hold off
